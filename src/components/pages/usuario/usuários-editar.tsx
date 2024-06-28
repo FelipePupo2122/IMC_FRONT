@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button, Box, FormControl, FormLabel, Input, Heading } from "@chakra-ui/react";
+import { Usuario } from "../../../Models/Usuario";
 
 function UsuarioEditar() {
   const { id } = useParams();
-  const [usuario, setUsuario] = useState({
+  const [usuario, setUsuario] = useState<Usuario>({
     nome: "",
-    email: "",
-    senha: ""
+    idade: 0,
   });
 
   useEffect(() => {
     async function fetchUsuario() {
-      const response = await fetch(`http://localhost:5284/api/usuarios/${id}`);
+      const response = await fetch(`http://localhost:5284/api/usuarios/buscar/${id}`);
       const data = await response.json();
       setUsuario(data);
     }
@@ -22,7 +22,7 @@ function UsuarioEditar() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await fetch(`http://localhost:5284/api/usuarios/${id}`, {
+    await fetch(`http://localhost:5284/api/usuarios/alterar/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -46,21 +46,12 @@ function UsuarioEditar() {
             required
           />
         </FormControl>
-        <FormControl id="email" mb={4}>
-          <FormLabel>Email</FormLabel>
+        <FormControl id="idade" mb={4}>
+          <FormLabel>Idade</FormLabel>
           <Input
-            type="email"
-            value={usuario.email}
-            onChange={(e) => setUsuario({ ...usuario, email: e.target.value })}
-            required
-          />
-        </FormControl>
-        <FormControl id="senha" mb={4}>
-          <FormLabel>Senha</FormLabel>
-          <Input
-            type="password"
-            value={usuario.senha}
-            onChange={(e) => setUsuario({ ...usuario, senha: e.target.value })}
+            type="number"
+            value={usuario.idade}
+            onChange={(e) => setUsuario({ ...usuario, idade: parseInt(e.target.value) })}
             required
           />
         </FormControl>
@@ -68,8 +59,8 @@ function UsuarioEditar() {
           Atualizar
         </Button>
       </form>
-      <Link to="/usuarios">
-        <Button mt={4} colorScheme="red">
+      <Link to="/usuários-listar">
+        <Button mt={4} colorScheme="teal">
           Cancelar
         </Button>
       </Link>

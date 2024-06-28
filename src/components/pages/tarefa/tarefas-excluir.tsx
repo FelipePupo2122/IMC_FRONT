@@ -19,7 +19,7 @@ function TarefaExcluir() {
       <Button onClick={excluirTarefa} colorScheme="red">
         Excluir
       </Button>
-      <Link to="/tarefas">
+      <Link to="/tarefas-listar">
         <Button ml={4} colorScheme="teal">
           Cancelar
         </Button>

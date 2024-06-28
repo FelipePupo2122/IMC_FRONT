@@ -61,7 +61,7 @@ const UsuarioCadastrar: React.FC = () => {
         </FormControl>
         <Button type="submit" colorScheme="teal">Cadastrar</Button>
       </form>
-      <Link to="/usuario">
+      <Link to="/usuários-listar">
         <Button mt={4} colorScheme="teal">Voltar para Listagem</Button>
       </Link>
     </Box>

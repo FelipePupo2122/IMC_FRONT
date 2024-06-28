@@ -6,9 +6,15 @@ function StatusExcluir() {
   const { id } = useParams<{ id: string }>();
 
   async function excluirStatus() {
-    await fetch(`http://localhost:5284/api/status/deletar/${id}`, {
+    const response = await fetch(`http://localhost:5284/api/status/deletar/${id}`, {
       method: "DELETE",
     });
+
+    if (response.ok) {
+      alert("Status excluído com sucesso!");
+    } else {
+      alert("Erro ao excluir status.");
+    }
   }
 
   return (
@@ -19,7 +25,7 @@ function StatusExcluir() {
       <Button onClick={excluirStatus} colorScheme="red">
         Excluir
       </Button>
-      <Link to="/status">
+      <Link to="/status-listar">
         <Button ml={4} colorScheme="teal">
           Cancelar
         </Button>
