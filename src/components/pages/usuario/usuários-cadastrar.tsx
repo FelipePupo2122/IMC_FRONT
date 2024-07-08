@@ -1,40 +1,53 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Box, Button, FormControl, FormLabel, Input, Heading } from '@chakra-ui/react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, FormControl, FormLabel, Input, Heading, Alert, AlertIcon } from '@chakra-ui/react';
 import { Usuario } from '../../../Models/Usuario';
 
-const UsuarioCadastrar: React.FC = () => {
+const UsuariosCadastrar: React.FC = () => {
   const [nome, setNome] = useState('');
-  const [idade, setIdade] = useState('');
+  const [dataDeNascimento, setDataDeNascimento] = useState('');
+  const [erro, setErro] = useState('');
+  const navigate = useNavigate();
 
   async function cadastrarUsuario() {
     const usuario: Usuario = {
       nome,
-      idade: parseInt(idade),
+      dataDeNascimento,
     };
 
-    try {
-      const response = await fetch('http://localhost:5284/api/usuarios/cadastrar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(usuario),
+    await fetch('http://localhost:5284/api/usuarios/cadastrar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(usuario),
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+      })
+      .then(() => {
+        navigate('/usuários-listar');
+      })
+      .catch(error => {
+        console.error('Erro ao cadastrar usuário:', error);
+        setErro(error.message);
       });
-
-      if (response.ok) {
-        console.log('Usuário cadastrado com sucesso');
-      } else {
-        console.error('Erro ao cadastrar usuário:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
-    }
   }
 
   return (
     <Box p={5}>
-      <Heading as="h1" size="xl" mb={5}>Cadastrar Usuário</Heading>
+      <Heading as="h1" size="xl" mb={5}>
+        Cadastrar Usuário
+      </Heading>
+      {erro && (
+        <Alert status="error" mb={4}>
+          <AlertIcon />
+          {erro}
+        </Alert>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -50,22 +63,26 @@ const UsuarioCadastrar: React.FC = () => {
             required
           />
         </FormControl>
-        <FormControl id="idade" mb={4}>
-          <FormLabel>Idade</FormLabel>
+        <FormControl id="dataDeNascimento" mb={4}>
+          <FormLabel>Data de Nascimento</FormLabel>
           <Input
-            type="number"
-            value={idade}
-            onChange={(e) => setIdade(e.target.value)}
+            type="date"
+            value={dataDeNascimento}
+            onChange={(e) => setDataDeNascimento(e.target.value)}
             required
           />
         </FormControl>
-        <Button type="submit" colorScheme="teal">Cadastrar</Button>
+        <Button type="submit" colorScheme="teal">
+          Cadastrar
+        </Button>
       </form>
       <Link to="/usuários-listar">
-        <Button mt={4} colorScheme="teal">Voltar para Listagem</Button>
+        <Button mt={4} colorScheme="teal">
+          Voltar para Listagem
+        </Button>
       </Link>
     </Box>
   );
 };
 
-export default UsuarioCadastrar;
+export default UsuariosCadastrar;
